@@ -1,9 +1,20 @@
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput
-import time
+import keyboard
+import sys
+
+# Fungsi untuk menutup program ketika tombol "q" ditekan
+def on_key_release(key):
+    if key.name == 'q':
+        global stop_program
+        stop_program = True
+
+# Tambahkan jalur ke direktori yang berisi file label
+sys.path.append('/path/to/jetson-infernece-data/networks/')
+from ssd_coco_labels import CLASS_NAMES
 
 # Inisialisasi detektor objek dengan model SSD MobileNetV2
-net = detectNet("ssd-mobilenet-v2", threshold=0.5)
+net = detectNet("ssd-mobilenet-v2", class_labels=CLASS_NAMES, threshold=0.5)
 
 # Inisialisasi video source dari kamera CSI
 camera = videoSource("/dev/video0")
@@ -11,39 +22,36 @@ camera = videoSource("/dev/video0")
 # Inisialisasi video output untuk tampilan
 display = videoOutput("display://0")
 
+# Daftarkan fungsi on_key_release() sebagai callback saat tombol ditekan
+keyboard.on_release(on_key_release)
+
+stop_program = False
+count_human = 0
+
 try:
-    # Membuka file untuk menulis data
-    with open("data.txt", "w") as file:
-        for _ in range(10):  # Loop selama 10 detik
-            start_time = time.time()  # Catat waktu awal detik
+    while display.IsStreaming() and not stop_program:
+        # Ambil frame dari kamera
+        img = camera.Capture()
 
-            # Ambil frame dari kamera
-            img = camera.Capture()
+        if img is None: # Timeout pengambilan frame
+            continue
 
-            if img is None: # Timeout pengambilan frame
-                continue
+        # Deteksi objek pada frame menggunakan model
+        detections = net.Detect(img)
 
-            # Deteksi objek pada frame menggunakan model
-            detections = net.Detect(img)
+        # Loop hitung objek manusia
+        for detection in detections:
+            if detection.ClassID == net.GetClassID("person"):
+                count_human += 1 # Menambahkan jumlah manusia
 
-            # Filter deteksi hanya untuk manusia (classID 1)
-            human_detections = [detection for detection in detections if detection.ClassID == 1]
+        # Render frame dengan bounding box dan label objek manusia
+        display.Render(img)
 
-            # Simpan data dalam file
-            file.write("FPS pada waktu itu: {:.2f}\n".format(net.GetNetworkFPS()))
-            file.write("\n")
-
-            # Render frame dengan bounding box dan label objek manusia
-            for detection in human_detections:
-                net.PrintProfilerTimes() # print the detection profiling info
-                display.Render(img)
-                display.SetStatus("Object Detection | Network {:.0f} FPS".format(net.GetNetworkFPS()))
-
-            # Tunggu hingga akhir detik
-            while time.time() - start_time < 1.0:
-                pass
+        # Set status dengan jumlah frame per detik (FPS) model
+        display.SetStatus("Object Detection | Network {:.0f} FPS".format(net.GetNetworkFPS()))
 
 finally:
     # Tutup program dengan membersihkan sumber daya
     display.Close()
     camera.Close()
+    keyboard.unhook_all()
