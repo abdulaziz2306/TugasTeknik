@@ -2,7 +2,6 @@ from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput
 import time
 
-#coba lagi
 # Inisialisasi detektor objek dengan model SSD MobileNetV2
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
@@ -31,8 +30,6 @@ try:
             human_detections = [detection for detection in detections if detection.ClassID == 1]
 
             # Simpan data dalam file
-            file.write("Waktu Pengambilan Data: {}\n".format(start_time))
-            file.write("Jumlah Manusia Terdeteksi: {}\n".format(len(human_detections)))
             file.write("FPS pada waktu itu: {:.2f}\n".format(net.GetNetworkFPS()))
             file.write("\n")
 
