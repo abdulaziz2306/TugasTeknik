@@ -2,7 +2,7 @@ from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput
 import time
 
-#udh masuk
+#coba lagi
 # Inisialisasi detektor objek dengan model SSD MobileNetV2
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
