@@ -12,6 +12,7 @@ run_time = 15  # Detik
 fps_data = []  # Untuk menyimpan data FPS
 
 start_time = time.time()
+end_time = start_time + run_time
 
 while (time.time() - start_time) < run_time:
     img = camera.Capture()
@@ -28,6 +29,8 @@ while (time.time() - start_time) < run_time:
     fps_data.append(fps)
 
     display.SetStatus("FPS: {:.2f}".format(fps))
+
+    time.sleep(1)
 
 # Buat file notepad dan catat data FPS
 with open("fps_data.txt", "w") as file:
