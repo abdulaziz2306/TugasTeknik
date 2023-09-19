@@ -26,10 +26,10 @@ while display.IsStreaming():
     
     # Hitung jumlah objek manusia
     for detection in detections:
-        if detection.ClassID == 1:  # ID kelas untuk manusia (Anda perlu memeriksa ID kelas yang benar)
+        if detection.ClassID == 1:  # ID Class manusia pada no 1 pada file ClassID.txt
             jumlah_objek_manusia += 1
         
-        if detetcion.ClassID == 0:
+        if detetcion.ClassID == 0: # ID Class manusia pada no 0 pada file ClassID.txt
             selain_manusia +=1
     
     # Tampilkan hasil deteksi
