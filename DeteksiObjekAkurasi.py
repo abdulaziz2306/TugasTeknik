@@ -1,19 +1,20 @@
-from jetson_inference import detectNet
-from jetson_utils import videoSource, videoOutput
+from jetson_inference import detectNet # Library Jetson Inference menyediakan model SSD MobilenetV2, dicloning dari Github 
+from jetson_utils import videoSource, videoOutput # Library Jetson Utils untuk Display dengan CUDA dari Jetson nano, dicloning dari Github
 
-# Inisialisasi model deteksi
+# Inisialisasi model deteksi dengan batas threshold 0.5 atau 50%
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
 # Inisialisasi sumber video
-camera = videoSource("In_1.jpg")      # '/dev/video0' for V4L2
+camera = videoSource("In_1.jpg") #file gambar diletakan difolder .py ini.
 
 # Inisialisasi tampilan video
-display = videoOutput("Out_1.jpg") # 'my_video.mp4' for file
+display = videoOutput("Out_1.jpg") #file gambar akan disimpan pada folder .py ini
 
-# Inisialisasi hitungan objek manusia
+# Inisialisasi hitungan objek manusia dan bukan manusia diawali nilai 0
 jumlah_objek_manusia = 0
 selain_manusia = 0
 
+#Perintah eksekusi running
 while display.IsStreaming():
     img = camera.Capture()
 
