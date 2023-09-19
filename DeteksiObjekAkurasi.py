@@ -14,4 +14,3 @@ while display.IsStreaming():
     detections = net.Detect(img)
     
     display.Render(img)
-    display.SetStatus("FPS".format(net.GetNetworkFPS()))
