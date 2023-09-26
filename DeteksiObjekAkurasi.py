@@ -5,10 +5,10 @@ from jetson_utils import videoSource, videoOutput # Library Jetson Utils untuk D
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
 # Inisialisasi sumber video
-camera = videoSource("2.jpeg") #file gambar diletakan difolder .py ini.
+camera = videoSource("3.jpeg") #file gambar diletakan difolder .py ini.
 
 # Inisialisasi tampilan video
-display = videoOutput("Out_2.jpg") #file gambar akan disimpan pada folder .py ini
+display = videoOutput("Out_3.jpg") #file gambar akan disimpan pada folder .py ini
 
 # Inisialisasi hitungan objek manusia dan bukan manusia diawali nilai 0
 jumlah_objek_manusia = 0
@@ -28,9 +28,7 @@ while display.IsStreaming():
     for detection in detections:
         if detection.ClassID == 1:  # ID Class manusia pada no 1 pada file ClassID.txt
             jumlah_objek_manusia += 1
-        
-        if detetcion.ClassID == 0: # ID Class manusia pada no 0 pada file ClassID.txt
-            selain_manusia +=1
+    
     
     # Tampilkan hasil deteksi
     display.Render(img)
