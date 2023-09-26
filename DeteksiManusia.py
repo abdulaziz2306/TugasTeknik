@@ -1,57 +1,40 @@
 from jetson_inference import detectNet
 from jetson_utils import videoSource, videoOutput
-import keyboard
-import sys
+import cv2
 
-# Fungsi untuk menutup program ketika tombol "q" ditekan
-def on_key_release(key):
-    if key.name == 'q':
-        global stop_program
-        stop_program = True
+# Inisialisasi model deteksi dengan threshold 0.5 atau 50%
+net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
-# Tambahkan jalur ke direktori yang berisi file label
-sys.path.append('/path/to/jetson-infernece-data/networks/')
-from ssd_coco_labels import CLASS_NAMES
+# Inisialisasi sumber video
+camera = videoSource("/path/to/your/image.jpg")  # Ganti dengan path gambar Anda
 
-# Inisialisasi detektor objek dengan model SSD MobileNetV2
-net = detectNet("ssd-mobilenet-v2", class_labels=CLASS_NAMES, threshold=0.5)
+# Inisialisasi tampilan video (output gambar)
+display = videoOutput("Out_3.jpg")  # File gambar akan disimpan pada folder .py ini
 
-# Inisialisasi video source dari kamera CSI
-camera = videoSource("/dev/video0")
+# Inisialisasi hitungan objek manusia dan objek selain manusia
+jumlah_objek_manusia = 0
+selain_manusia = 0
 
-# Inisialisasi video output untuk tampilan
-display = videoOutput("display://0")
+# Perintah eksekusi running
+while display.IsStreaming():
+    img = camera.Capture()
 
-# Daftarkan fungsi on_key_release() sebagai callback saat tombol ditekan
-keyboard.on_release(on_key_release)
+    if img is None:  # capture timeout
+        continue
 
-stop_program = False
-count_human = 0
+    # Lakukan deteksi objek
+    detections = net.Detect(img)
 
-try:
-    while display.IsStreaming() and not stop_program:
-        # Ambil frame dari kamera
-        img = camera.Capture()
+    # Hitung jumlah objek manusia dan selain manusia
+    for detection in detections:
+        if detection.ClassID == 1:  # ID Class manusia pada nomor 1 pada file ClassID.txt
+            jumlah_objek_manusia += 1
+        else:
+            selain_manusia += 1
 
-        if img is None: # Timeout pengambilan frame
-            continue
+    # Tampilkan hasil deteksi
+    display.Render(img)
+    display.SetStatus("Jumlah Objek Manusia: {}, Jumlah Objek Selain Manusia: {}".format(jumlah_objek_manusia, selain_manusia))
 
-        # Deteksi objek pada frame menggunakan model
-        detections = net.Detect(img)
-
-        # Loop hitung objek manusia
-        for detection in detections:
-            if detection.ClassID == net.GetClassID("person"):
-                count_human += 1 # Menambahkan jumlah manusia
-
-        # Render frame dengan bounding box dan label objek manusia
-        display.Render(img)
-
-        # Set status dengan jumlah frame per detik (FPS) model
-        display.SetStatus("Object Detection | Network {:.0f} FPS".format(net.GetNetworkFPS()))
-
-finally:
-    # Tutup program dengan membersihkan sumber daya
-    display.Close()
-    camera.Close()
-    keyboard.unhook_all()
+# Hentikan tampilan video
+display.Close()
