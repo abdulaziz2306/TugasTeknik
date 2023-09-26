@@ -5,7 +5,7 @@ from jetson_utils import videoSource, videoOutput # Library Jetson Utils untuk D
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
 # Inisialisasi sumber video
-camera = videoSource("2.jpg") #file gambar diletakan difolder .py ini.
+camera = videoSource("2.jpeg") #file gambar diletakan difolder .py ini.
 
 # Inisialisasi tampilan video
 display = videoOutput("Out_2.jpg") #file gambar akan disimpan pada folder .py ini
