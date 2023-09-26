@@ -6,10 +6,10 @@ import cv2
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
 # Inisialisasi sumber video
-camera = videoSource("/path/to/your/image.jpg")  # Ganti dengan path gambar Anda
+camera = videoSource("1.jpeg")  # Ganti dengan path gambar Anda
 
 # Inisialisasi tampilan video (output gambar)
-display = videoOutput("Out_3.jpg")  # File gambar akan disimpan pada folder .py ini
+display = videoOutput("Out_4.jpg")  # File gambar akan disimpan pada folder .py ini
 
 # Inisialisasi hitungan objek manusia dan objek selain manusia
 jumlah_objek_manusia = 0
