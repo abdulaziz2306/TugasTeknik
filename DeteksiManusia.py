@@ -31,10 +31,10 @@ while display.IsStreaming():
             jumlah_objek_manusia += 1
         else:
             selain_manusia += 1
-
-    # Tampilkan hasil deteksi
-    display.Render(img)
-    display.SetStatus("Jumlah Objek Manusia: {}, Jumlah Objek Selain Manusia: {}".format(jumlah_objek_manusia, selain_manusia))
+    
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    text = "Jumlah Objek Manusia: {}".format(jumlah_objek_manusia)
+    cv2.putText(img, text, (10, 30), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
 # Hentikan tampilan video
 display.Close()
