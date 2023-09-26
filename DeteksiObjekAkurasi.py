@@ -8,7 +8,7 @@ net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 camera = videoSource("2.jpg") #file gambar diletakan difolder .py ini.
 
 # Inisialisasi tampilan video
-display = videoOutput("Out_1.jpg") #file gambar akan disimpan pada folder .py ini
+display = videoOutput("Out_2.jpg") #file gambar akan disimpan pada folder .py ini
 
 # Inisialisasi hitungan objek manusia dan bukan manusia diawali nilai 0
 jumlah_objek_manusia = 0
