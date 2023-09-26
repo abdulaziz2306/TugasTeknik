@@ -28,7 +28,7 @@ while display.IsStreaming():
     for detection in detections:
         if detection.ClassID == 1:  # ID Class manusia pada no 1 pada file ClassID.txt
             jumlah_objek_manusia += 1
-    
+    #up
     
     # Tampilkan hasil deteksi
     display.Render(img)
